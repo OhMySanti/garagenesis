@@ -11,12 +11,12 @@ import static org.terminal.Menus.archivedVehiclesListView;
 import static org.terminal.UserInput.input;
 
 public class VehicleManager {
-    public static List<Vehicle> activeVehiclesList = new ArrayList<>();
+    public static List<Vehicle> activeVehiclesList = new ArrayList<>(); // TODO: List<Vechice> ArrayList LIST LISTTT!!!
     public static List<Vehicle> archivedVehiclesList = new ArrayList<>();
 
-    public static String currency = "crystal coin";
+    public static String currency = "crystal coin"; //
 
-    static Vehicle lastRemovedFromActive = null;
+    static Vehicle lastRemovedFromActive = null; // TODO: looks ify, why do we have to remeber this ?
     static Vehicle lastRemovedFromArchive = null;
 
     public static void removeVehicleFromActive(Vehicle vehicle) {

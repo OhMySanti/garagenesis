@@ -12,20 +12,22 @@ public class Vehicle {
     public String type;
     public VehicleOwner owner;
     public Integer noOfWheels;
-    public Integer duePayment = 0;
+    public Integer duePayment = 0; // TODO: why do we set it to 0 ?
 
     public Size size;
 
-    public PaintType paintType = PaintType.MATTE;
+    public PaintType paintType = PaintType.MATTE;  // TODO: every vehicle is matte by defult ?
 
-    public Status status = Status.PENDING;
+    public Status status = Status.PENDING; // TODO: We dont know whether it's a car or a ship but we  already know its pending ?
 
     public List<Service> activeServices = new LinkedList<>();
     public List<Service> historyOfServices = new LinkedList<>();
+    // TODO: is a "history of services" an inherent property of a car? What if our system grows and
+    // TODO: starts serving 2 or 3 or 10 garages in the near future?
 
     public enum Size {
         //        UNSPECIFIED(10, "UNSPECIFIED"),
-        SMALL(1, "SMALL", "S"),
+        SMALL(1, "SMALL", "S"), // TODO: I believe SMALL is already "SMALL", looks like redundancy
         MEDIUM(2, "MEDIUM", "M"),
         LARGE(3, "LARGE", "L");
 
@@ -82,7 +84,7 @@ public class Vehicle {
     }
 
     public enum Status {
-        ARCHIVED(10, "ARCHIVED\t"),
+        ARCHIVED(10, "ARCHIVED\t"), // TODO: Why does name contain '\t' character?
         PENDING(1, "PENDING\t"),
         ACCEPTED(2, "ACCEPTED\t"),
         IN_SERVICE(3, "IN SERVICE\t"),
@@ -98,6 +100,7 @@ public class Vehicle {
             this.displayName = name;
         }
 
+        // TODO: what's the point? sorting priority? why not just move archived to the bottom ?
         public Integer getSortingPriority() {
             return this.sortingPriority;
         }
@@ -107,9 +110,9 @@ public class Vehicle {
         }
     }
 
-    public void changeStatus(Status newStatus) {
+    public void changeStatus(Status newStatus) { // NIT: conventionally setStatus
         this.status = newStatus;
-        System.out.println("Sorting by " + newStatus.getDisplayName());
+        System.out.println("Sorting by " + newStatus.getDisplayName()); // TODO: this could be dumped as logs I think
     }
 
     void completeService(Service service) {

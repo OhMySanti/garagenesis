@@ -8,7 +8,7 @@ public class Ship extends Vehicle {
         this.size = size;
         this.paintType = paintType;
 
-        this.type = "Ship\t";
+        this.type = "Ship\t"; // TODO: Do we want to allow type = "dsasffwa4" ? why not enum? Or.. do we need it at all?
         this.noOfWheels = 0;
     }
 
