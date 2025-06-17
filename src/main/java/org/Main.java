@@ -1,16 +1,12 @@
 package org;
 
-import org.vehicles.*;
-import org.terminal.DisplayVehicles;
-import org.terminal.Menus;
-
-import static org.terminal.DisplayVehicles.testMe;
-import static org.terminal.Menus.mainView;
+import static org.terminal.views.MainView.mainView;
 
 public class Main {
     public static void main(String[] args) {
-        testMe();
-        mainView();
-
+        AppState appState = AppState.load();
+        org.TestMe.testMe(appState);
+//        AppState.save(appState);
+        mainView(appState);
     }
 }

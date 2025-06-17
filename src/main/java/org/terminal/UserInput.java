@@ -1,7 +1,12 @@
 package org.terminal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
+
+import static org.terminal.SelectionOptions.displayAvailableOptions;
 
 public class UserInput {
     public static Scanner input = new Scanner(System.in);
@@ -24,15 +29,26 @@ public class UserInput {
         }
     }
 
-    public static void userChooseFromOptions(List<Options.SelectionOption> optionsList) {
-        String userSelector = input.nextLine();
-        Options.SelectionOption chosenOption = optionsList.stream().
-                filter(option -> userSelector.equalsIgnoreCase(option.selector)).findFirst().orElse(null);
-        if (chosenOption != null) {
-            chosenOption.execute();
-        } else {
-            System.out.println("Invalid selection, try another!");
-            userChooseFromOptions(optionsList);
+    public static <T extends Enum<T>> T userChooseEnumOption(
+            Class<T> enumClass,
+            Function<T, String> getSelector,
+            Function<T, String> getDisplayName
+    ) {
+        List<SelectionOptions.SelectionOption> optionsList = new ArrayList<>();
+        AtomicReference<T> result = new AtomicReference<>(null);
+
+        for (T constant : enumClass.getEnumConstants()) {
+            optionsList.add(new SelectionOptions.SelectionOption(
+                            getSelector.apply(constant),
+                            getDisplayName.apply(constant),
+                            _ -> result.set(constant)
+                    )
+            );
         }
+
+        displayAvailableOptions(optionsList);
+        SelectionOptions.userChooseFromOptions(optionsList);
+
+        return result.get();
     }
 }
