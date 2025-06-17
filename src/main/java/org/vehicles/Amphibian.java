@@ -2,13 +2,13 @@ package org.vehicles;
 
 public class Amphibian extends Vehicle {
 
-    public Amphibian(String registration, Size size, PaintType paintType, VehicleOwner owner) {
+    public Amphibian(String registration, ESize.Size size, EPaintType.PaintType paintType, VehicleOwner owner) {
         this.registration = registration;
         this.owner = owner;
         this.size = size;
         this.paintType = paintType;
 
-        this.type = "Amphibian";
+        this.type = EVehicleType.VehicleType.AMPHIBIAN;
         this.noOfWheels = 6;
     }
 

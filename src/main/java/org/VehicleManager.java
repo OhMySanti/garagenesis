@@ -6,64 +6,74 @@ import org.vehicles.Vehicle;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.terminal.Menus.activeVehiclesListView;
-import static org.terminal.Menus.archivedVehiclesListView;
-import static org.terminal.UserInput.input;
+import static org.AppState.save;
 
 public class VehicleManager {
-    public static List<Vehicle> activeVehiclesList = new ArrayList<>();
-    public static List<Vehicle> archivedVehiclesList = new ArrayList<>();
 
     public static String currency = "crystal coin";
 
-    static Vehicle lastRemovedFromActive = null;
-    static Vehicle lastRemovedFromArchive = null;
+    private static Vehicle lastRemovedFromActive = null;
+    private static Vehicle lastRemovedFromArchive = null;
 
-    public static void removeVehicleFromActive(Vehicle vehicle) {
-        if (activeVehiclesList.contains(vehicle)) {
-            activeVehiclesList.remove(vehicle);
-            lastRemovedFromActive = vehicle;
-            System.out.println("Vehicle removed!");
-        } else {
-            System.out.println("Something went very wrong... No such vehicle among active vehicles");
+    private static Vehicle selectedVehicle;
+    private static Service selectedService;
+
+    public static Vehicle getLastRemovedFromActive() {
+        return lastRemovedFromActive;
+    }
+
+    public static void setLastRemovedFromActive(Vehicle lastRemovedFromActive) {
+        VehicleManager.lastRemovedFromActive = lastRemovedFromActive;
+    }
+
+    public static Vehicle getLastRemovedFromArchive() {
+        return lastRemovedFromArchive;
+    }
+
+    public static void setLastRemovedFromArchive(Vehicle lastRemovedFromArchive) {
+        VehicleManager.lastRemovedFromArchive = lastRemovedFromArchive;
+    }
+
+    public static Vehicle getSelectedVehicle() {
+        return selectedVehicle;
+    }
+
+    public static void setSelectedVehicle(Vehicle selectedVehicle) {
+        VehicleManager.selectedVehicle = selectedVehicle;
+    }
+
+    public static Service getSelectedService() {
+        return selectedService;
+    }
+
+    public static void setSelectedService(Service selectedService) {
+        VehicleManager.selectedService = selectedService;
+    }
+
+    public static void completeAllServices(Vehicle vehicle) {
+        List<Service> iterList = new ArrayList<>(vehicle.activeServices);
+        for (Service service : iterList) {
+            service.complete();
         }
-        System.out.println("Press ENTER to continue");
-        input.nextLine();
-
-        activeVehiclesListView();
     }
 
-    public void removeVehicleFromArchive(Vehicle vehicle) {
-        if (archivedVehiclesList.contains(vehicle)) {
-            archivedVehiclesList.remove(vehicle);
-            lastRemovedFromArchive = vehicle;
-            System.out.println("Vehicle removed from the archive!");
+    public static String removeVehicle(AppState appState, Vehicle vehicle) {
+        if (appState.getActiveVehiclesList().remove(vehicle)) {
+            return "ACTIVE";
+        } else if (appState.getArchivedVehiclesList().remove(vehicle)) {
+            return "ARCHIVED";
         } else {
-            System.out.println("Something went very wrong...No such vehicle among archived vehicles");
-        }
-        System.out.println("Press ENTER to continue");
-        input.nextLine();
-
-        archivedVehiclesListView();
-    }
-
-
-    public static void moveVehicleToHistory(Vehicle vehicle) {
-        if (activeVehiclesList.contains(vehicle)) {
-            archivedVehiclesList.add(vehicle);
-            activeVehiclesList.remove(vehicle);
-            System.out.println("Vehicle " + vehicle.registration + " moved from active to archived vehicles");
-        } else {
-            System.out.println("Something went very wrong... No such vehicle among active vehicles");
+            return "ERROR?!";
         }
     }
 
-    public static void completeActiveService(Service service) {
-        service.getVehicle().duePayment += service.calculateFee();
-        service.getVehicle().historyOfServices.add(service);
-        service.getVehicle().activeServices.remove(service);
-
-        System.out.println("Service " + service.getDisplayName() + " moved to vehicle history");
+    public static boolean moveVehicleToArchive(AppState appState, Vehicle vehicle) {
+        if (appState.getActiveVehiclesList().remove(vehicle)) {
+            appState.getArchivedVehiclesList().add(vehicle);
+            vehicle.status = org.vehicles.EStatus.Status.ARCHIVED;
+            return true;
+        } else {
+            return false;
+        }
     }
-
 }

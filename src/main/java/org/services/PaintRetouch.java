@@ -1,15 +1,29 @@
 package org.services;
 
-import org.vehicles.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.vehicles.Vehicle;
 
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id"
+)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PaintRetouch implements Service {
 
     String displayName = "Paint retouch";
     Integer baseCost = 200;
     Vehicle vehicle;
+    Long id;
 
     public PaintRetouch(Vehicle vehicle){
         this.vehicle = vehicle;
+        this.id = IdCounter.idCounterService.incrementAndGet();
+    }
+
+    public PaintRetouch() {
+
     }
 
     @Override
@@ -37,5 +51,26 @@ public class PaintRetouch implements Service {
     @Override
     public Vehicle getVehicle(){
         return vehicle;
+    }
+
+    @Override
+    public boolean remove(){
+        return this.getVehicle().activeServices.remove(this);
+    }
+
+    @Override
+    public boolean complete(){
+        if (this.vehicle.activeServices.remove(this)){
+            this.vehicle.duePayment += this.calculateFee();
+            this.vehicle.historyOfServices.add(this);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public Long getId() {
+        return this.id;
     }
 }
